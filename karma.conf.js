@@ -1,24 +1,40 @@
-var config = {
+var karmaConfig = {
+
+    basePath: "",
 
     frameworks: ["jasmine"],
 
-    port: 9876,
-
-    logLevel: null,
+    port: 3333,
 
     colors: true,
 
     autoWatch: true,
 
-    browsers: ["ChromeHeadless"],
-
     // Karma plugins loaded
     plugins: [
         "karma-jasmine",
-        "karma-coverage",
-        "karma-electron",
-        "karma-mocha-reporter"
+        "karma-webpack",
+        "karma-chrome-launcher"
     ],
+
+    customLaunchers: {
+        ChromeHeadless: {
+            base: 'Chrome',
+            flags: [
+                '--headless',
+                '--disable-gpu',
+                // Without a remote debugging port, Google Chrome exits immediately.
+                '--remote-debugging-port=9222',
+            ]
+        }
+    },
+
+    browsers: ["ChromeHeadless"],
+
+    // browserConsoleLogOptions: {
+    //     level: 'log',
+    //     terminal: true
+    // },
 
     concurrency: Infinity,
 
@@ -28,11 +44,11 @@ var config = {
     reporters: ["progress"],
 
     files: [
-        "src/**/*.spec.ts"
+        "src/test.spec.ts"
     ],
 
     preprocessors: {
-        "src/**/*.spec.ts": ["webpack"]
+        "src/test.spec.ts": ["webpack"]
     },
 
     coverageReporter: {
@@ -90,7 +106,14 @@ var config = {
     webpackServer: {
         noInfo: true,
         stats: "normal"
-    }
+    },
+
+    mime: {
+        'text/x-typescript': ['ts','tsx']
+    },
 }
 
-module.exports = function() { return config; };
+module.exports = function(config) {
+    karmaConfig.logLevel = config.LOG_DEBUG;
+    config.set(karmaConfig);
+};
