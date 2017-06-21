@@ -16,7 +16,8 @@ export class State {
     private stateStream = new ReplaySubject<Notification>(1); // todo history
 
     public registerFractions(fractions: Array<Fraction<any>>) {
-        this.fractions = fractions;
+        if (fractions)
+            this.fractions = fractions;
     }
 
     public notify<TData>(action: Action<TData>): void {
@@ -31,19 +32,22 @@ export class State {
     }
 
     private handleSyncAction(fraction: Fraction<any>, action: Action<any>) {
-        const result = fraction.handleAction(action);
-        if (result === undefined)
-            return;
 
         const fractionName = fraction.getName();
         const currentState = this.state[fractionName];
-        if (JSON.stringify(currentState) !== JSON.stringify(result)) { // TODO
-            this.state[fractionName] = result;
-            this.stateStream.next({
-                name: fractionName,
-                data: result
-            })
-        }
+        const result = fraction.handleAction(currentState, action);
+        if (result === undefined)
+            return;
+
+        if (result === currentState)
+            return;
+
+        this.state[fractionName] = result;
+
+        this.stateStream.next({
+            name: fractionName,
+            data: result
+        });
     }
 
     private handleAsyncAction(fraction: Fraction<any>, action: Action<any>): void {
@@ -60,7 +64,7 @@ export class State {
     }
 
     public select<TData>(name: string): Observable<TData> {
-        if (!this.fractions.find((x) => x.getName() == name))
+        if (!this.fractions.find((x) => x.getName() == name)) // todo cache
             throw new Error(`Invalid state name - ${name}`);
 
         return this.stateStream.filter<Notification>((x) => {

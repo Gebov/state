@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule, Inject } from "@angular/core";
+import { ModuleWithProviders, NgModule, Inject, Optional } from "@angular/core";
 import { State } from "./state";
 import { Fraction } from "./fraction";
 
@@ -13,7 +13,7 @@ export class StateModule {
        };
     }
 
-    constructor(@Inject(State) state: State, @Inject(Fraction) fractions: Fraction<any>[]) {
+    constructor(@Optional() @Inject(State) state: State, @Inject(Fraction) fractions: Fraction<any>[]) {
         state.registerFractions(fractions);
     }
 }
