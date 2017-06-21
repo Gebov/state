@@ -44,11 +44,11 @@ var karmaConfig = {
     reporters: ["progress"],
 
     files: [
-        "src/test.spec.ts"
+        "src/**/*.spec.ts"
     ],
 
     preprocessors: {
-        "src/test.spec.ts": ["webpack"]
+        "src/**/*.spec.ts": ["webpack"]
     },
 
     coverageReporter: {
@@ -114,6 +114,6 @@ var karmaConfig = {
 }
 
 module.exports = function(config) {
-    karmaConfig.logLevel = config.LOG_DEBUG;
+    karmaConfig.logLevel = config.LOG_INFO;
     config.set(karmaConfig);
 };
