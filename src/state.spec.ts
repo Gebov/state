@@ -114,6 +114,50 @@ describe("state tests", () => {
         expect(handleAsyncActionSpy).toHaveBeenCalled();
     });
 
+    it("assert sync action result updates state", () => {
+        state.registerFractions([new FractionImpl()]);
+
+        state.notify({
+            name: HANDLED_ACTION_NAME
+        });
+
+        expect(stateAny.innerState[fractionName]).toBe(State.EMPTY_VALUE);
+
+        state.notify({
+            name: HANDLED_ACTION_NAME,
+            data: null
+        });
+
+        expect(stateAny.innerState[fractionName]).toBe(null);
+    });
+
+    it("assert sync action does not update with same value", (done: DoneFn) => {
+        state.registerFractions([new FractionImpl()]);
+
+        const testData = {};
+        let timesPassed = 0;
+        state.select(fractionName).subscribe((data) => {
+            timesPassed++;
+        });
+
+        state.notify({
+            name: HANDLED_ACTION_NAME,
+            data: testData
+        });
+
+        expect(stateAny.innerState[fractionName]).toBe(testData);
+
+        state.notify({
+            name: HANDLED_ACTION_NAME,
+            data: testData
+        });
+
+        setTimeout(() => {
+            expect(timesPassed).toBe(1);
+            done();
+        }, 0);
+    });
+
     it("test not handling actions", (done: DoneFn) => {
         const unhandledAction: Action<TestData> = {
             name: UNHANDLED_ACTION_NAME,
