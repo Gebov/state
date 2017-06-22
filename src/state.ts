@@ -10,14 +10,23 @@ interface Notification {
 
 @Injectable()
 export class State {
-    private state: any = {};
-    private fractions: Array<Fraction<any>> = [];
+    public static readonly EMPTY_VALUE = undefined;
     private readonly asyncSuffix = "async";
+
+    private innerState: any = {};
+    private fractions: Array<Fraction<any>> = [];
     private stateStream = new ReplaySubject<Notification>(1); // todo history
 
     public registerFractions(fractions: Array<Fraction<any>>) {
-        if (fractions)
+        if (fractions) {
+            fractions.forEach((fraction) => {
+                const fractionName = fraction.getName();
+                if (!this.innerState.hasOwnProperty(fractionName))
+                    this.innerState[fractionName] = State.EMPTY_VALUE;
+            });
+
             this.fractions = fractions;
+        }
     }
 
     public notify<TData>(action: Action<TData>): void {
@@ -34,15 +43,15 @@ export class State {
     private handleSyncAction(fraction: Fraction<any>, action: Action<any>) {
 
         const fractionName = fraction.getName();
-        const currentState = this.state[fractionName];
+        const currentState = this.innerState[fractionName];
         const result = fraction.handleAction(currentState, action);
-        if (result === undefined)
+        if (result === State.EMPTY_VALUE)
             return;
 
         if (result === currentState)
             return;
 
-        this.state[fractionName] = result;
+        this.innerState[fractionName] = result;
 
         this.stateStream.next({
             name: fractionName,
@@ -52,7 +61,7 @@ export class State {
 
     private handleAsyncAction(fraction: Fraction<any>, action: Action<any>): void {
         const asyncHandle = fraction.handleAsyncAction(action);
-        if (asyncHandle === undefined) // todo
+        if (asyncHandle === State.EMPTY_VALUE) // todo
             return;
 
         const subscription = asyncHandle.subscribe((data) => {
@@ -64,8 +73,8 @@ export class State {
     }
 
     public select<TData>(name: string): Observable<TData> {
-        if (!this.fractions.find((x) => x.getName() == name)) // todo cache
-            throw new Error(`Invalid state name - ${name}`);
+        if (!this.innerState.hasOwnProperty(name))
+            throw new Error("Invalid subscription");
 
         return this.stateStream.filter<Notification>((x) => {
             return x.name === name;
