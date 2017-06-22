@@ -6,7 +6,7 @@ import { Observable } from "rxjs/Rx";
 const HANDLED_ACTION_NAME = "NAME";
 const UNHANDLED_ACTION_NAME = "NAME2";
 const HANDLED_ASYNC_ACTION_NAME = "NAME_ASYNC";
-// const UNHANDLED_ASYNC_ACTION_NAME = "NAME2_ASYNC";
+const UNHANDLED_ASYNC_ACTION_NAME = "NAME2_ASYNC";
 
 const fractionName = "fractionimpl";
 
@@ -38,11 +38,16 @@ class FractionImpl extends Fraction<TestData> {
 describe("state tests", () => {
     let state: State;
     let stateAny: any;
-
+    let handleSyncActionSpy: jasmine.Spy;
+    let handleAsyncActionSpy: jasmine.Spy;
 
     beforeEach(() => {
         state = new State();
         stateAny = state;
+        handleSyncActionSpy = jasmine.createSpy("handleSyncAction", stateAny.handleSyncAction).and.callThrough();
+        handleAsyncActionSpy = jasmine.createSpy("handleAsyncAction", stateAny.handleAsyncAction).and.callThrough();
+        stateAny.handleSyncAction = handleSyncActionSpy;
+        stateAny.handleAsyncAction = handleAsyncActionSpy;
     });
 
     it("assert default return actions", () => {
@@ -56,6 +61,57 @@ describe("state tests", () => {
         stateCopy[fractionName] = State.EMPTY_VALUE;
 
         expect(stateAny.innerState).toEqual(stateCopy);
+    });
+
+    it("test if action is sync or not", () => {
+        let isAsync = stateAny.isAsyncAction(HANDLED_ACTION_NAME);
+        expect(isAsync).toBe(false);
+
+        isAsync = stateAny.isAsyncAction(HANDLED_ASYNC_ACTION_NAME);
+        expect(isAsync).toBe(true);
+    });
+
+    it("assert that with no registered fractions, no handlers are called", () => {
+        const actions = [HANDLED_ACTION_NAME, HANDLED_ASYNC_ACTION_NAME, UNHANDLED_ACTION_NAME, UNHANDLED_ASYNC_ACTION_NAME];
+
+        actions.forEach((actionName) => {
+            state.notify({
+                name: actionName
+            });
+
+            expect(handleSyncActionSpy).not.toHaveBeenCalled();
+            expect(handleAsyncActionSpy).not.toHaveBeenCalled();
+        });
+    });
+
+    it("test action redistribution", () => {
+        state.registerFractions([new FractionImpl()]);
+
+        state.notify({
+            name: HANDLED_ACTION_NAME
+        });
+
+        expect(handleSyncActionSpy).toHaveBeenCalled();
+        expect(handleAsyncActionSpy).not.toHaveBeenCalled();
+
+        handleSyncActionSpy.calls.reset();
+
+        state.notify({
+            name: HANDLED_ASYNC_ACTION_NAME
+        });
+
+        expect(handleSyncActionSpy).toHaveBeenCalled();
+        expect(handleAsyncActionSpy).toHaveBeenCalled();
+
+        handleSyncActionSpy.calls.reset();
+        handleAsyncActionSpy.calls.reset();
+
+        state.notify({
+            name: UNHANDLED_ASYNC_ACTION_NAME
+        });
+
+        expect(handleSyncActionSpy).not.toHaveBeenCalled();
+        expect(handleAsyncActionSpy).toHaveBeenCalled();
     });
 
     it("test not handling actions", (done: DoneFn) => {
@@ -131,6 +187,30 @@ describe("state tests", () => {
                 done();
             });
         }, handledAction);
+    });
+
+    it("test not handling of async actions", (done: DoneFn) => {
+        const unhandledAction: Action<TestData> = {
+            name: UNHANDLED_ASYNC_ACTION_NAME,
+            data: {
+                test: true
+            }
+        };
+
+        testAction((handleActionSpy, action) => {
+            expect(handleActionSpy).not.toHaveBeenCalled();
+
+            let handled: boolean = false;
+            state.select<TestData>(fractionName).subscribe((data) => {
+                handled = true;
+            });
+
+            setTimeout(() => {
+                expect(handled).toBe(false);
+                done();
+            }, 0);
+
+        }, unhandledAction);
     });
 
     function testAction(asserter: (spy: jasmine.Spy, action: Action<TestData>) => void, action: Action<TestData>) {
