@@ -6,8 +6,6 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "noImplicitAny": false,
-    "noEmitHelpers": true,
-    "importHelpers": true,
     "noUnusedLocals": true,
     "noEmit": true,
     "lib": [

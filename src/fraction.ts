@@ -7,11 +7,7 @@ export abstract class Fraction<TData> {
         return className.toLowerCase();
     }
 
-    handleAction(currentState: TData, action: Action<TData>): TData {
-        return; // return undefined to mark this as unhandled
-    }
+    abstract handleAction(currentState: TData, action: Action<TData>): TData;
 
-    handleAsyncAction(action: Action<TData>): Observable<Action<TData>> {
-        return; // return undefined to mark this as unhandled
-    }
+    abstract handleAsyncAction(action: Action<TData>): Observable<Action<TData>>;
 }

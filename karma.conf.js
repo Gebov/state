@@ -1,3 +1,5 @@
+const webpackConfig = require("./webpack.config.js");
+
 var karmaConfig = {
 
     basePath: "",
@@ -10,7 +12,6 @@ var karmaConfig = {
 
     autoWatch: true,
 
-    // Karma plugins loaded
     plugins: [
         "karma-jasmine",
         "karma-webpack",
@@ -31,25 +32,12 @@ var karmaConfig = {
 
     browsers: ["ChromeHeadless"],
 
-    // browserConsoleLogOptions: {
-    //     level: 'log',
-    //     terminal: true
-    // },
-
     concurrency: Infinity,
 
     singleRun: true,
 
     // Coverage reporter generates the coverage
     reporters: ["progress"],
-
-    files: [
-        "src/test.spec.ts"
-    ],
-
-    preprocessors: {
-        "src/test.spec.ts": ["webpack"]
-    },
 
     coverageReporter: {
         dir: "coverage/",
@@ -66,41 +54,7 @@ var karmaConfig = {
             {
                 type: "text-summary"
             }
-        ],
-        instrumenterOptions: {
-            istanbul: {
-                noCompact: true
-            }
-        }
-    },
-
-    webpack: {
-        resolve: {
-            extensions: ['.ts', '.js']
-        },
-
-        module: {
-            loaders: [
-                {
-                    test: /\.ts?$/,
-                    loader: 'awesome-typescript-loader'
-                }
-            ]
-        },
-        externals: {
-            "@angular/core": {
-                commonjs: "@angular/core",
-                commonjs2: "@angular/core"
-            },
-            "rxjs": {
-                commonjs: "rxjs",
-                commonjs2: "rxjs"
-            },
-            "tslib": {
-                commonjs: "tslib",
-                commonjs2: "tslib"
-            }
-        }
+        ]
     },
 
     webpackServer: {
@@ -114,6 +68,23 @@ var karmaConfig = {
 }
 
 module.exports = function(config) {
-    karmaConfig.logLevel = config.LOG_DEBUG;
+    karmaConfig.logLevel = config.LOG_INFO;
+
+    if (config.debug) {
+        karmaConfig.browsers = ["Chrome"];
+        karmaConfig.singleRun = false;
+        karmaConfig.browserNoActivityTimeout = Number.MAX_SAFE_INTEGER;
+    }
+
+    karmaConfig.webpack = {
+        resolve: webpackConfig.resolve,
+        module: webpackConfig.module
+    };
+
+    const karmaFiles = "./karma-files.js";
+    karmaConfig.files = [karmaFiles];
+    karmaConfig.preprocessors = {};
+    karmaConfig.preprocessors[karmaFiles] = ["webpack"];
+
     config.set(karmaConfig);
 };

@@ -32,11 +32,7 @@ module.exports = {
         "rxjs": {
             commonjs: "rxjs",
             commonjs2: "rxjs"
-        },
-        "tslib": {
-            commonjs: "tslib",
-            commonjs2: "tslib"
-        },
+        }
     },
     plugins: [
         new CheckerPlugin()
