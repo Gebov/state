@@ -40,8 +40,16 @@ export class State {
         });
     }
 
-    private handleSyncAction(fraction: Fraction<any>, action: Action<any>) {
+    public select<TData>(name: string): Observable<TData> {
+        if (!this.innerState.hasOwnProperty(name))
+            throw new Error("Invalid subscription");
 
+        return this.stateStream.filter<Notification>((x) => {
+            return x.name === name;
+        }).map(x => x.data);
+    }
+
+    private handleSyncAction(fraction: Fraction<any>, action: Action<any>) {
         const fractionName = fraction.getName();
         const currentState = this.innerState[fractionName];
         const result = fraction.handleAction(currentState, action);
@@ -70,15 +78,6 @@ export class State {
                 subscription.unsubscribe();
             }
         });
-    }
-
-    public select<TData>(name: string): Observable<TData> {
-        if (!this.innerState.hasOwnProperty(name))
-            throw new Error("Invalid subscription");
-
-        return this.stateStream.filter<Notification>((x) => {
-            return x.name === name;
-        }).map(x => x.data);
     }
 
     private isAsyncAction(actionName: string): boolean {
