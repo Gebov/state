@@ -84,6 +84,24 @@ describe("state tests", () => {
         });
     });
 
+    it("assert state is immutable", () => {
+        const fractions = [new FractionImpl()];
+        state.registerFractions(fractions);
+
+        state.notify({
+            name: HANDLED_ACTION_NAME,
+            data: {
+                test: true
+            }
+        });
+
+        state.select<TestData>(fractionName).subscribe(data => {
+            expect(() => {
+                data.test = false;
+            }).toThrowError("Cannot assign to read only property 'test' of object '#<Object>'")
+        });
+    });
+
     it("test action redistribution", () => {
         state.registerFractions([new FractionImpl()]);
 

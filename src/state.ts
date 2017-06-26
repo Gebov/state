@@ -5,7 +5,9 @@ import { Observable, ReplaySubject } from "rxjs";
 
 interface Notification {
     name: string,
-    data: any
+    data: any,
+
+    action: Action<any>
 }
 
 @Injectable()
@@ -46,24 +48,30 @@ export class State {
 
         return this.stateStream.filter<Notification>((x) => {
             return x.name === name;
-        }).map(x => x.data);
+        }).map(x => x.data).pluck(name);
     }
 
     private handleSyncAction(fraction: Fraction<any>, action: Action<any>) {
         const fractionName = fraction.getName();
         const currentState = this.innerState[fractionName];
-        const result = fraction.handleAction(currentState, action);
+
+        let result = fraction.handleAction(currentState, action);
         if (result === State.EMPTY_VALUE)
             return;
 
         if (result === currentState)
             return;
 
+        if (result instanceof Object) {
+            result = Object.freeze(result);
+        }
+
         this.innerState[fractionName] = result;
 
         this.stateStream.next({
             name: fractionName,
-            data: result
+            data: this.innerState,
+            action: action
         });
     }
 

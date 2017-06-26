@@ -2,6 +2,8 @@ const webpackConfig = require("./webpack.config.js");
 
 var karmaConfig = {
 
+    browserNoActivityTimeout: 60 * 60,
+
     basePath: "",
 
     frameworks: ["jasmine"],
