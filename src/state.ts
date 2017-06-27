@@ -32,8 +32,9 @@ export class State {
     }
 
     public notify<TData>(action: Action<TData>): void {
+        const isAsyncAction = this.isAsyncAction(action.name);
         this.fractions.forEach((fraction: Fraction<TData>) => {
-            if (this.isAsyncAction(action.name)) {
+            if (isAsyncAction) {
                 this.handleAsyncAction(fraction, action);
             }
             else {
