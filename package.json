@@ -1,5 +1,5 @@
 {
-  "name": "state",
+  "name": "ngstate",
   "version": "0.0.1-beta",
   "description": "A library for maniging state in client-side applications",
   "main": "index.ts",
