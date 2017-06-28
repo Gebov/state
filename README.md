@@ -117,3 +117,6 @@ import { FRACTION_REGISTRY } from "./app.fraction.ts";
 
   ...
 ```
+
+## Fractions
+Advanced explanation of fractions and the mechanism underneath can be found [here](https://github.com/Gebov/state/wiki/Fractions)
