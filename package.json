@@ -1,10 +1,9 @@
 {
   "name": "ngstate",
-  "version": "0.0.1-beta",
+  "version": "0.0.2-beta",
   "description": "A library for maniging state in client-side applications",
   "main": "index.ts",
   "scripts": {
-    "start": "webpack-dev-server --config config/webpack.dev.js",
     "test:debug": "npm run test -- --debug",
     "test": "karma start ./karma.conf.js",
     "build": "webpack --progress --profile"
@@ -54,7 +53,7 @@
     "zone.js": "0.8.12"
   },
   "peerDependencies": {
-    "@angular/core": "^4.2.3",
-    "rxjs": "^5.4.1"
+    "@angular/core": "^2.0.0 || ^4.0.0",
+    "rxjs": "^5.0.0"
   }
 }
