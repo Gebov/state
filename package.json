@@ -1,5 +1,5 @@
 {
-  "name": "state",
+  "name": "ngstate",
   "version": "0.0.1-beta",
   "description": "A library for maniging state in client-side applications",
   "main": "index.ts",
@@ -14,14 +14,20 @@
     "url": "git+ssh://git@github.com/gebov/state.git"
   },
   "keywords": [
+    "ng2",
     "state",
-    "client",
     "angular",
     "rxjs",
-    "immutable"
+    "immutable",
+    "rx",
+    "observables",
+    "observable",
+    "stream",
+    "reactive",
+    "store"
   ],
   "author": "gebov",
-  "license": "ISC",
+  "license": "Apache 2.0",
   "bugs": {
     "url": "https://github.com/gebov/state/issues"
   },
