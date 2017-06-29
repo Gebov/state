@@ -1,7 +1,7 @@
 {
   "name": "ngstate",
-  "version": "0.0.2-beta",
-  "description": "A library for maniging state in client-side applications",
+  "version": "0.0.3-beta",
+  "description": "A library for maniging state in Angular 2 applications",
   "main": "index.ts",
   "scripts": {
     "test:debug": "npm run test -- --debug",
