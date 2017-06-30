@@ -10,6 +10,9 @@ interface Notification {
     action: Action<any>
 }
 
+/**
+ * The state service that dispatches actions and provides access to the state
+ */
 @Injectable()
 export class State {
     public static readonly EMPTY_VALUE = undefined;
@@ -19,6 +22,10 @@ export class State {
     private fractions: Array<Fraction<any>> = [];
     private stateStream = new ReplaySubject<Notification>(1); // todo history
 
+    /**
+     * Registers additional fractions with the state. Can be used to extend the state dynamically.
+     * @param fractions The fractions to be registered.
+     */
     public registerFractions(fractions: Array<Fraction<any>>) {
         if (fractions) {
             fractions.forEach((fraction) => {
@@ -31,6 +38,10 @@ export class State {
         }
     }
 
+    /**
+     * This function dispatches an action to all of the available fractions.
+     * @param action The action to dispatch.
+     */
     public notify<TData>(action: Action<TData>): void {
         const isAsyncAction = this.isAsyncAction(action.name);
         this.fractions.forEach((fraction: Fraction<TData>) => {
@@ -43,6 +54,10 @@ export class State {
         });
     }
 
+    /**
+     * Returns an observable that tracks changes to the fraction.
+     * @param name The name of the fraction.
+     */
     public select<TData>(name: string): Observable<TData> {
         if (!this.innerState.hasOwnProperty(name))
             throw new Error("Invalid subscription");

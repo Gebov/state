@@ -1,6 +1,6 @@
 {
   "name": "ngstate",
-  "version": "0.0.3-beta",
+  "version": "0.0.4-beta",
   "description": "A library for maniging state in Angular 2 applications",
   "main": "index.ts",
   "scripts": {
