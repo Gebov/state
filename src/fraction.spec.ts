@@ -1,5 +1,4 @@
 import { Fraction } from "./fraction";
-import { Observable } from "rxjs/Rx";
 import { Action } from "./action";
 
 const testFractionName = "testFraction";
@@ -9,10 +8,6 @@ class FractionImpl extends Fraction<any> {
     handleAction(currentState: any, action: Action<any>) {
         throw new Error("Method not implemented.");
     }
-
-    handleAsyncAction(action: Action<any>): Observable<Action<any>> {
-        throw new Error("Method not implemented.");
-    }
 }
 class FractionName extends Fraction<any> {
 
@@ -20,9 +15,6 @@ class FractionName extends Fraction<any> {
         throw new Error("Method not implemented.");
     }
 
-    handleAsyncAction(action: Action<any>): Observable<Action<any>> {
-        throw new Error("Method not implemented.");
-    }
     getName() {
         return testFractionName;
     }

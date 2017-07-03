@@ -93,7 +93,7 @@ export class State {
 
     private handleAsyncAction(fraction: Fraction<any>, action: Action<any>): void {
         const asyncHandle = fraction.handleAsyncAction(action);
-        if (asyncHandle === State.EMPTY_VALUE) // todo
+        if (asyncHandle === State.EMPTY_VALUE)
             return;
 
         const subscription = asyncHandle.subscribe((data) => {
