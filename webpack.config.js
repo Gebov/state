@@ -1,6 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
-const { CheckerPlugin } = require('awesome-typescript-loader');
+const atl = require('awesome-typescript-loader');
 
 module.exports = {
     context: path.resolve(__dirname, './src'),
@@ -35,6 +35,6 @@ module.exports = {
         }
     },
     plugins: [
-        new CheckerPlugin()
+        new atl.CheckerPlugin()
     ]
 };
