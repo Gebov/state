@@ -1,5 +1,6 @@
 import { Action } from "./action";
 import { Observable } from "rxjs/Observable";
+import { State } from "./state";
 
 /**
  * Fractions handle actions. They can be sync and async. Async actions must end with the 'async' keyword.
@@ -28,5 +29,7 @@ export abstract class Fraction<TData> {
      * Handles the async action. If the action cannot be handled, the method should return 'undefined'
      * @param action The async action that was dispatched. This method is invoked by the State when an action is dispatched.
      */
-    abstract handleAsyncAction(action: Action<TData>): Observable<Action<TData>>;
+    public handleAsyncAction(action: Action<TData>): Observable<Action<TData>> {
+        return State.EMPTY_VALUE;
+    }
 }
