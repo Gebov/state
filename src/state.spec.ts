@@ -23,7 +23,7 @@ class FractionImpl extends Fraction<TestData> {
         return currentState;
     }
 
-    handleAsyncAction(action: Action<TestData>): Observable<Action<TestData>> {
+    handleAsyncAction(currentState: TestData, action: Action<TestData>): Observable<Action<TestData>> {
         if (action.name === HANDLED_ASYNC_ACTION_NAME) {
             return Observable.of<Action<TestData>>({
                 name: HANDLED_ACTION_NAME,
@@ -51,16 +51,28 @@ describe("state tests", () => {
     });
 
     it("assert default return actions", () => {
-        expect(stateAny.fractions).toBeDefined();
-        expect(stateAny.fractions.length).toBe(0);
-        const fractions = [new FractionImpl()];
+        const singleFraction = new FractionImpl();
+        const fractions = [singleFraction];
         state.registerFractions(fractions);
 
-        expect(stateAny.fractions).toBe(fractions);
+        const cache = stateAny.fractionsCache;
+
+        expect(cache.size).toBe(1);
+        expect(cache.get(singleFraction.getName())).toBe(singleFraction);
+
         const stateCopy = {};
         stateCopy[fractionName] = State.EMPTY_VALUE;
 
         expect(stateAny.innerState).toEqual(stateCopy);
+    });
+
+    it("assert registering fractions with taken names throws an error", () => {
+        const fractionImpl = new FractionImpl();
+        const fractions = [fractionImpl];
+        state.registerFractions(fractions);
+        expect(() => {
+            state.registerFractions(fractions);
+        }).toThrowError(`Fraction with the name ${fractionImpl.getName()} already exists.`);
     });
 
     it("test if action is sync or not", () => {
