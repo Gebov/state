@@ -23,7 +23,7 @@ class FractionImpl extends Fraction<TestData> {
         return currentState;
     }
 
-    handleAsyncAction(action: Action<TestData>): Observable<Action<TestData>> {
+    handleAsyncAction(currentState: TestData, action: Action<TestData>): Observable<Action<TestData>> {
         if (action.name === HANDLED_ASYNC_ACTION_NAME) {
             return Observable.of<Action<TestData>>({
                 name: HANDLED_ACTION_NAME,

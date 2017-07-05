@@ -19,7 +19,8 @@ export class State {
     private readonly asyncSuffix = "async";
 
     private innerState: any = {};
-    private fractions: Array<Fraction<any>> = [];
+    private fractionsCache = new Map<string, Fraction<any>>();
+
     private stateStream = new ReplaySubject<Notification>(1); // todo history
 
     /**
@@ -32,9 +33,9 @@ export class State {
                 const fractionName = fraction.getName();
                 if (!this.innerState.hasOwnProperty(fractionName))
                     this.innerState[fractionName] = State.EMPTY_VALUE;
-            });
 
-            this.fractions = fractions;
+                this.fractionsCache.set(fractionName, fraction);
+            });
         }
     }
 
@@ -44,12 +45,13 @@ export class State {
      */
     public notify<TData>(action: Action<TData>): void {
         const isAsyncAction = this.isAsyncAction(action.name);
-        this.fractions.forEach((fraction: Fraction<TData>) => {
+
+        this.fractionsCache.forEach((fraction, name) => {
             if (isAsyncAction) {
-                this.handleAsyncAction(fraction, action);
+                this.handleAsyncAction(name, fraction, action);
             }
             else {
-                this.handleSyncAction(fraction, action);
+                this.handleSyncAction(name, fraction, action);
             }
         });
     }
@@ -67,8 +69,7 @@ export class State {
         }).map(x => x.data).pluck(name);
     }
 
-    private handleSyncAction(fraction: Fraction<any>, action: Action<any>) {
-        const fractionName = fraction.getName();
+    private handleSyncAction(fractionName: string, fraction: Fraction<any>, action: Action<any>) {
         const currentState = this.innerState[fractionName];
 
         let result = fraction.handleAction(currentState, action);
@@ -91,8 +92,10 @@ export class State {
         });
     }
 
-    private handleAsyncAction(fraction: Fraction<any>, action: Action<any>): void {
-        const asyncHandle = fraction.handleAsyncAction(action);
+    private handleAsyncAction(fractionName: string, fraction: Fraction<any>, action: Action<any>): void {
+        const currentState = this.innerState[fractionName];
+
+        const asyncHandle = fraction.handleAsyncAction(currentState, action);
         if (asyncHandle === State.EMPTY_VALUE)
             return;
 
