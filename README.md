@@ -25,7 +25,7 @@ export class Message {
 
 class AppFraction extends Fraction<Message> {
 
-    handleAction(currentState: Message, action: Action<Message>): Message {
+    handleAction(currentState: Message, action: Action<any>): Message {
         if (action.name === HELLO_ACTION_NAME) {
             return {
                 text: action.data.text
