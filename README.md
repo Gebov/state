@@ -35,12 +35,6 @@ class AppFraction extends Fraction<Message> {
         // return current state if no modifications are made
         return currentState;
     }
-    
-    handleAsyncAction(action: Action<Message>): Observable<Action<Message>> {
-
-        // return undefined if there are no async actions that need to be handled
-        return undefined;
-    }
 }
 
 export const FRACTION_REGISTRY: ClassProvider = {
