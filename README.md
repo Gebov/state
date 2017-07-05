@@ -25,7 +25,7 @@ export class Message {
 
 class AppFraction extends Fraction<Message> {
 
-    handleAction(currentState: Message, action: Action<Message>): Message {
+    handleAction(currentState: Message, action: Action<any>): Message {
         if (action.name === HELLO_ACTION_NAME) {
             return {
                 text: action.data.text
@@ -34,12 +34,6 @@ class AppFraction extends Fraction<Message> {
 
         // return current state if no modifications are made
         return currentState;
-    }
-    
-    handleAsyncAction(action: Action<Message>): Observable<Action<Message>> {
-
-        // return undefined if there are no async actions that need to be handled
-        return undefined;
     }
 }
 
