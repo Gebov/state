@@ -51,6 +51,8 @@ describe("state tests", () => {
     });
 
     it("assert default return actions", () => {
+        expect(true).toBe(false);
+
         const singleFraction = new FractionImpl();
         const fractions = [singleFraction];
         state.registerFractions(fractions);
