@@ -27,6 +27,7 @@ export abstract class Fraction<TData> {
 
     /**
      * Handles the async action. If the action cannot be handled, the method should return 'undefined'
+     * @param currentState The current state of the fraction.
      * @param action The async action that was dispatched. This method is invoked by the State when an action is dispatched.
      */
     public handleAsyncAction(currentState: TData, action: Action<any>): Observable<Action<any>> {
