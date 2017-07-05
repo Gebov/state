@@ -31,11 +31,10 @@ export class State {
         if (fractions) {
             fractions.forEach((fraction) => {
                 const fractionName = fraction.getName();
-                if (this.innerState.hasOwnProperty(fractionName))
-                    throw new Error(`Fraction with the name ${fractionName} already exists.`)
-
-                this.innerState[fractionName] = State.EMPTY_VALUE;
-                this.fractionsCache.set(fractionName, fraction);
+                if (!this.fractionsCache.has(fractionName)) {
+                    this.innerState[fractionName] = State.EMPTY_VALUE;
+                    this.fractionsCache.set(fractionName, fraction);
+                }
             });
         }
     }

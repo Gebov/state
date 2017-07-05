@@ -66,13 +66,13 @@ describe("state tests", () => {
         expect(stateAny.innerState).toEqual(stateCopy);
     });
 
-    it("assert registering fractions with taken names throws an error", () => {
+    it("assert registering fractions with taken names does not throw an error", () => {
         const fractionImpl = new FractionImpl();
         const fractions = [fractionImpl];
         state.registerFractions(fractions);
         expect(() => {
             state.registerFractions(fractions);
-        }).toThrowError(`Fraction with the name ${fractionImpl.getName()} already exists.`);
+        }).not.toThrowError(`Fraction with the name ${fractionImpl.getName()} already exists.`);
     });
 
     it("test if action is sync or not", () => {
