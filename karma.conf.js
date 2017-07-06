@@ -39,19 +39,12 @@ var karmaConfig = {
     singleRun: true,
 
     // Coverage reporter generates the coverage
-    reporters: ["progress"],
+    reporters: ["progress", "coverage"],
 
     coverageReporter: {
-        dir: "coverage/",
         reporters: [
             {
-                type: "html",
-                subdir: "report-html"
-            },
-            {
-                type: "json",
-                subdir: "./",
-                file: "coverage.json"
+                type: "lcov",
             },
             {
                 type: "text-summary"
@@ -86,7 +79,7 @@ module.exports = function(config) {
     const karmaFiles = "./karma-files.js";
     karmaConfig.files = [karmaFiles];
     karmaConfig.preprocessors = {};
-    karmaConfig.preprocessors[karmaFiles] = ["webpack"];
+    karmaConfig.preprocessors[karmaFiles] = ["webpack", "codecov"];
 
     config.set(karmaConfig);
 };
