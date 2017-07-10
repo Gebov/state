@@ -4,6 +4,7 @@
 
 [![npm version](https://badge.fury.io/js/ngstate.svg)](https://badge.fury.io/js/ngstate)
 [![CircleCI](https://circleci.com/gh/Gebov/state/tree/master.svg?style=shield)](https://circleci.com/gh/Gebov/state/tree/master)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 The main advantage of this state management library is that it allows its state to be dynamically extended - even by lazy modules. Another big advantage is that it is easily pluggable using Angular's DI mechanism. The fractions themselves are instantiated by Angular, which allows for other services to be injected into them.
 
